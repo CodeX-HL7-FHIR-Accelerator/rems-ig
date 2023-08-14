@@ -1,14 +1,18 @@
 # Risk Evaluation and Mitigation Strategy (REMS) Implementation Guide Home Page
 
 ### Overview
-A Risk Evaluation and Mitigation Strategy (REMS) is a drug safety program that the U.S. Food and Drug Administration (FDA) can require for certain medications with serious safety concerns to help ensure the benefits of the medication outweigh its risks. REMS are designed to reinforce medication use behaviors and actions that support the safe use of that medication. While all medications have labeling that informs health care stakeholders about medication risks, only a few medications require a REMS.
+A Risk Evaluation and Mitigation Strategy (REMS) is a drug safety program that the U.S. Food and Drug Administration (FDA) can require for certain medications with serious safety concerns to help ensure the benefits of the medication outweigh its risks. REMS are designed to reinforce medication use behaviors and actions that support the safe use of that medication. While all medications have labeling that informs health care stakeholders about medication risks, only a few medications require REMS programs.
 
 This implementation guide strives to enable automated REMS workflows between the various participants within the REMS ecosystem.  
 
 ### Content and organization
 The implementation guide is organized into the following sections:
-* [Use Cases](use-cases.html) and Overview describes the intent of the implementation guide, gives examples of its use and provides a high-level overview of expected process flow
-
+* [Use Cases](use-cases.html) describes the context process scope of the implementation guide--identifying the participants, specific scenarios and variations addressed in the guide, and how the associated systems interact to support the process goal
+* [Triggering During Patient Care](cds-triggers.html) provides guidance for initiating interactions between the EHR and REMS Administrator at appropriate points in patient care
+* [Sharing EHR Data in CDS Hook Events](cds-data-sharing.html) discusses information that needs to be shared during EHR / REMS Administrator interactions to enable the Administrator to identify information needs, notifications and next process steps
+* [SMART App Launch and Security](smart-launch-and-security.html) gives guidance related to the SMART on FHIR app launch process and associated security considerations
+* [Use of Questionnaires Within SMART Apps](questionnaires.html) discusses the use of FHIR Questionnaires in the REMS process for gathering information from EHR users and system records
+* [Technical Background](technical-background.html) describes the different specifications this implementation guide relies on and indicates what developers should read and understand prior to implementing this specification
 * [Technical Background](technical-background.html) describes the different specifications this implementation guide relies on and indicates what developers should read and understand prior to implementing this specification
 * [Formal Specification](specification.html) covers the detailed implementation requirements and conformance expectations
 * [Artifacts](artifacts.html) introduces and provides links to the FHIR R4 profiles, operations and other FHIR artifacts used in this implementation guide
