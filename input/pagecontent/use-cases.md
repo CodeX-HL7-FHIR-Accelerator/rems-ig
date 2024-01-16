@@ -1,85 +1,29 @@
-### REMS Participants and Roles
-Risk Evaluation and Mitigation Strategies (REMS) programs require providers, patients and others to perform certain actions to ensure the safe use of certain high-risk medications. Each of these medications has a REMS Administrator that makes sure these steps are being taken and reports back to the US Food and Drug Administration (FDA). 
+_See [Participants and Roles](roles.html) for descriptions of the actors and systems referenced in the use cases below_
 
-#### Human Roles
-Below is an outline of those who play a role in the parts of the REMS process currently covered by this guide:
-- The **REMS Administrator** is an organization that establishes a program for maintaining safe use of a particular drug with the FDA, and then ensures that patients, prescribers, and others involved in fulfilling the prescription follow REMS program steps. The Administrator:
-  - trains and certifies providers to prescribe or dispense the medication
-  - shares educational material that providers must share with the patient
-  - enrolls the patient into the program, with their agreement to follow safe use guidelines
-  - obtains status information and clinical evidence demonstrating that participants are meeting program requirements
-  - reports program participation and outcomes to the FDA.
-- The **prescriber** or their agent (e.g., an authorized nurse or other party): 
-  - typically receives information about risks associated with the medication from its manufacturer
-  - may need to complete training and certification steps with the REMS Administrator to be authorized to prescribe the drug
-  - may also need to send the Administrator patient clinical information or assessments at the time of ordering or at later points in the patient's treatment.
+<p></p>
 
-  _Note: The guide uses "prescriber" throughout to represent the ordering provider or other authorized party acting on their behalf._
-- The **patient:** 
-  - receives information or counseling about the risks associated with the medication, actions they need to take to mitigate those risks, symptoms to watch for and report to their provider, etc. The patient may need to formally acknowledge the risks before starting on the medication.
+#### Note Regarding REMS Program and Scenario Variations
+REMS programs impose differing requirements on providers and patients. In some cases, patients must enroll in the program and assert their understanding of the potential medication risks and commit to certain behaviors before starting treatment. Other REMS programs are limited to providing educational information to the patient. Others require prescriber training and certification.
 
-After the prescription is ordered, others participate in REMS steps to fulfill the medication safely. These participants and steps are not addressed in this version of the guide.
-- The pharmacist will confirm that enrollment and prescribing steps were completed, and may need to provide education or counseling to the patient, before dispensing the medication.
-- A drug distributor may need to follow REMS guidelines when providing the medication to the dispensing pharmacy.
-- The patient's insurance company will confirm that REMS steps have been completed before paying for the treatment.
+Likewise, the needs of a particular treatment situation may differ from others. For example, the applicable REMS program may require providers to train and certify before prescribing the medication, but the particular prescriber previously completed those steps through an offline process.
 
-#### System Roles
-- The **REMS Administrator** system: 
-  - transmits program guidance and requirements to provider systems
-  - obtains patient and provider statements and other patient information from prescriber EHRs and using SMART on FHIR apps
-  - interacts with other REMS participant systems at pharmacies, drug distributors and payers during activities not currently covered by this guide
-- The prescriber's **EHR**:
-  - systematically notifies the REMS Administrator and supplies REMS-related information during treatment...
-    - prior to the initial medication order
-    - after the initial order. Depending on the program, this can include information at the time of re-ordering the drug or periodic treatment information.
-- A data exchange **intermediary** may participate in the process on behalf of one or more REMS Administrators. The intermediary may:
-  - act as a CDS Server fielding CDS requests related to one or more medications
-  - host a SMART app supporting one or more medications
-  - perform additional services outside the scope of this guide.
+The scenario descriptions in this section include aspects that won't apply to all REMS programs or treatment situations. The corresponding FHIR approaches are intended to be applied if and when they fit a particular medication's program.
 
-### Use Case Overview
-This guide supports a set of scenarios involving interaction between prescribers, patients and REMS Administrators. The list below outlines participants' needs, and later sections further describe the related process scenarios.
+#### System Contexts
+The scenarios below may be encountered in two different system contexts, where the provider is either:
+- performing a patient care activity using their EHR, during which the EHR connects with the REMS Administrator system to notify it of the care event, provide patient information and/or request program information
+- visiting the REMS Administrator's external web application directly--outside of their EHR--and the application retrieves information from the EHR to support its workflow.
 
-* **Prescribers** need to:
-  * Certify to prescribe a medication covered by a REMS program
-  * Enroll a patient in a REMS program so that they can be given the medication
-  * Attest to REMS education requirements 
-  * Provide periodic patient updates to the REMS administrator 
+This guide recommends initiating exchanges with the REMS Administrator from within the EHR workflow wherever possible--to enable interactions to be triggered based on relevant treatment actions and to avoid the need for the provider to manually navigate to external applications, maintain separate login credentials, etc. 
 
-* **Patients** need to: 
-  * Provide or confirm enrollment information
-  * Receive relevant documentation 
-  * _[Provide updates (discuss)]_ 
-
-* **REMS Administrators** need to: 
-  * Supply program certification, education and enrollment materials to prescribers and patients
-  * Obtain information and statements from the prescriber and patient during patient enrollment--prior to starting use of the medication
-  * Obtain treatment information and assessments from the prescriber _[and patient (discuss)]_ while the patient is taking the medication
-  * _[Alert prescribers about patient treatment, risks or missed REMS requirements while the patient is taking the medication (discuss)]_  
-
-_[We haven't discussed the bullet below for a while... but should]:_
-
-- **Healthcare institutions _[prescribers]_** need an easy means to validate that the pharmacy a medication request is being sent to is enrolled in the REMS program _[and/or is able to dispense the medication?]_ prior to sending the prescription 
-
-This implementation guide defines FHIR-based approaches that participants in the REMS based workflows described above can use to interact with each other to streamline REMS process.  
-
-_Note regarding existing prescription processes and standards:_ This IG does not redefine the means for transmitting a medication request from the provider to a pharmacy. This activity is currently handled by existing standards and functionality. This guide is focused on the areas that are not handled by or have had inadequate adoption of existing standards. 
+However, ther
 
 ### Prescriber and Patient-Focused System Scenarios
-As introduced above, prescribers and patients need a way to more easily interact with the REMS Administrator during treatment. The following scenarios describe how those needs fit into patient care events.
+As introduced in [Participants and Roles](roles.html), prescribers and patients need a way to more easily interact with the REMS Administrator during treatment. The following scenarios illustrate how those needs fit into patient care events.
 
-Note that not all REMS programs have the same requirements. For instance, some programs don't require patient enrollment and are more geared toward providing educational information to the provider and patient. Others require prescriber training and certification. 
 
-As such, certain aspects below will apply in all cases--for example the initiating step where the prescriber EHR requests program information and unmet requirements from the REMS Administrator. 
-
-Other aspects may or may not apply for a particular circumstance; for example,
-- the applicable REMS program may not require patient enrollment
-- or a prescriber may have previously completed their training and certification for the program.
-
-Lastly, these scenarios share the same context: a patient care activity during which the EHR connects with the REMS Administrator to notify it of a care event and request program information or requirements.
-
-#### Scenario One: Share Program Information or Requirements Prior to Ordering
-During the course of evaluating a patient, the prescriber decides to prescribe a medication that has a REMS program. At an appropriate point in the process (e.g., when the prescriber starts creating the medication request within their EHR, at the start of a related encounter, etc.), it queries the REMS Administration system using CDS Hooks to learn of any unmet program requirements, for example provider certification or patient enrollment.
+#### Scenario: Prescriber EHR initiates patient enrollment during patient care
+During the course of evaluating a patient, the prescriber decides to prescribe a medication that has a REMS program. At an appropriate point in the process (e.g., when the prescriber starts creating the medication request within their EHR, at the start of a related encounter, etc.), it contacts the REMS Administration system using CDS Hooks to supply patient treatment information and learn of any unmet program requirements, for example provider certification or patient enrollment.
 
 The REMS Administrator responds in one or more of the following ways:
 - No further program information or requirements need to be shared
@@ -88,7 +32,8 @@ The REMS Administrator responds in one or more of the following ways:
 - Additional program information is available
 - No REMS program applies to the event
 
-##### Prescriber Certification
+#### Alternative Follow-On Flows
+##### Prescriber Certification Required
 If the REMS Administrator determines that the prescriber is not currently registered for the REMS program, its CDS Hooks response contains a notification and links to training material and a SMART on FHIR application or other means by which certification can be completed. 
 
 The EHR presents the alert notifying the provider that they will need to certify in the REMS program before the order can be dispensed, along with the supplied information and app links.
@@ -215,6 +160,3 @@ Payer requirements might include the need for prior authorization, forms that mu
 
 **7. Provider invokes links**<br/>
 If the response includes links to additional information or apps, the provider can direct the EMR to interact further with the payer system by retrieving the linked-to information or launching the provided application.
-
-
-
